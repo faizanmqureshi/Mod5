@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>T.W.I.P | Register</title>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--stylesheet-->
+    <link rel="stylesheet" href="../css/register.css">
+
+    <!--fonts-->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="form-div">
+        <div class="container">
+            <!--register header-->
+            <h2 id="registerHeader">Register pincode</h2>
+
+            <br>
+
+            <!--pincode-->
+            <label><b>Pincode:</b></label>
+            <input type="password" id="pin" placeholder="Enter Pincode" required>
+
+            <br>
+
+            <label><b>Confirm pincode:</b></label>
+            <input type="password" id="confirmPin" placeholder="Enter Pincode" required>
+
+            <!--next button-->
+            <input type="button" id="nextButton" value="Next">
+        </div>
+    </div>
+</body>
+
+<script>
+
+    // Change the password of the requested user, if both the pincodes are the same.
+    var button = document.getElementById('nextButton');
+    button.onclick = async function() {
+        var name = sessionStorage.getItem("storageName")
+        let pin = document.querySelector("#pin");
+        let confirmPin = document.querySelector("#confirmPin");
+
+        if (confirmPin.value == pin.value) {
+            let response = fetch('http://localhost:8000/users/change_password', {
+                method: "PATCH",
+                headers: {'Authorization': 'Basic ' + btoa(name + ':' + pin.value)}});
+            await response;
+            alert("You changed your password!");
+            sessionStorage.removeItem("storageName");
+        window.location.replace("../html/login.html");
+        } else {
+            alert("Make sure your pincodes are the same!");
+        }
+    }
+</script>

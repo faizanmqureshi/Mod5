@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>T.W.I.P | Log In</title>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--stylesheet-->
+    <link rel="stylesheet" href="../css/login.css">
+
+    <!--fonts-->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300&display=swap" rel="stylesheet">
+
+    <!--jQuery libary-->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha384-vk5WoKIaW/vJyUAd9n/wmopsmNhiy+L2Z+SBxGYnUkunIxVxAv/UtMOhba/xskxh" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div class="form-div">
+        <div class="container">
+            <!--general header-->
+            <div class="generalHeader">
+                <h1>Two-Wheeler Indicator Panel</h1>
+            </div>
+
+            <br>
+            <br>
+            <br>
+
+            <!--login header-->
+            <h2 id="loginHeader">Log In</h2>
+            <div>
+                <p id="registerNoAccount">Don't have an account?</p>
+                <a href="../html/register.html"> Sign Up</a>
+            </div>
+
+            <br>
+
+            <!--username-->
+            <label><b>Username:</b></label>
+            <input type="text" id="someName" placeholder="Enter Username" required>
+
+            <br>
+
+            <!--pincode-->
+            <label><b>Pincode:</b></label>
+            <input type="password" id="somePass" placeholder="Enter Pincode" name="pin" maxlength="4" required>
+            <div id="openModalForgotPincode">
+                <a> Forgot your Pincode? </a>
+            </div>
+
+            <br>
+
+            <!--log in button-->
+            <input type="button" id="loginButton" value="Log In">
+
+        </div>
+    </div>
+    <!--modal forgot pincode-->
+    <div id="modalForgotPincode" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+
+            <label><b>Question 1: What was the name of your first pet?</b></label>
+            <br>
+            <input type="text" id="seq_1" placeholder="Enter Answer" required>
+
+            <br>
+            <br>
+
+            <label><b>Question 2: In what city did your parents meet?</b></label>
+            <br>
+            <input type="text" id="seq_2" placeholder="Enter Answer" required>
+
+            <br>
+            <br>
+            <input type="button" id="nextButton" value="Next">
+        </div>
+    </div>
+</body>
+
+<script>
+    
+    sessionStorage.setItem("storageName", "");
+    var button = document.getElementById('loginButton');
+    let userName = document.querySelector("#someName");
+    let password = document.querySelector("#somePass");
+
+    // When the user click on login, this sets the user name if the login was succesful and redirects.
+    button.onclick = async function() {
+        let response = fetch("http://localhost:8000/users/authenticate", {
+            method: "GET",
+            headers: {'Authorization': 'Basic ' + btoa(userName.value + ':' + password.value)}});
+        
+        let data = await response.then(data => data.json());
+        console.log(data);
+
+        if (data) {
+            sessionStorage.setItem("storageName", userName.value);
+            window.location.replace("../html/homepage.html");
+        } else {
+            alert("Login data is invalid, please try again");
+        }
+    }    
+
+    //modal forgot pincode
+    var modalForgotPicnode = document.getElementById("modalForgotPincode");
+    var buttonForgotPincode = document.getElementById("openModalForgotPincode");
+    var span = document.getElementsByClassName("close")[0];
+
+    buttonForgotPincode.onclick = function() {
+        modalForgotPicnode.style.display = "block";
+
+        //jQuery function to blur the background when modal is open
+        $('.modal').addClass('open');
+        if ($('.modal').hasClass('open')) {
+            $('.form-div').addClass('blur');
+        }
+    }
+
+    span.onclick = function() {
+        modalForgotPicnode.style.display = "none";
+
+        //remove blur when modal is closed
+        $('.form-div').removeClass('blur');
+    }
+
+    window.onclick = function(event) {
+        if (event.target == modalForgotPicnode) {
+            modalForgotPicnode.style.display = "none";
+
+            //remove blur when modal is closed
+            $('.form-div').removeClass('blur');
+        }
+    }
+
+    // The forgot your pincode implementation.
+    var nextButton = document.getElementById('nextButton');
+    nextButton.onclick = async function() {
+        let seq_1 = document.querySelector("#seq_1");
+        let seq_2 = document.querySelector("#seq_2");
+
+        let response = fetch("http://localhost:8000/users/authenticate/" + seq_1.value + '/' + seq_2.value, {
+            method: "GET",
+            headers: {'Authorization': 'Basic ' + btoa(userName.value + ':' + password.value)}});
+
+        let data = await response.then(data => data.json());
+
+        if (data) {
+            sessionStorage.setItem("storageName", userName.value);
+            window.location.replace("../html/registerForgotPincode.html")
+        } else {
+            alert("Login data is invalid, please try again");
+        }
+    }
+</script>

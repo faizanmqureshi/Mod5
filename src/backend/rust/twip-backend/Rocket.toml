@@ -1,0 +1,2 @@
+[global.databases.postgres]
+url = "postgresql://postgres:postgres@localhost/postgres"

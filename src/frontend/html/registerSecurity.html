@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>T.W.I.P | Register</title>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--stylesheet-->
+    <link rel="stylesheet" href="../css/registerSecurity.css">
+
+    <!--fonts-->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="form-div">
+        <div class="container">
+            <!--register header-->
+            <h2 id="registerHeader">Security Questions</h2>
+
+            <br>
+
+            <!--security questions-->
+            <label><b>Question 1: <br>
+                What was the name of your first pet?</b></label>
+            <input type="text" id="seq1" placeholder="Enter Answer" required>
+
+            <br>
+
+            <label><b>Question 2: <br>
+                In what city did your parents meet?</b></label>
+            <input type="text" id="seq2" placeholder="Enter Answer" required>
+
+            <br>
+
+            <!--checkbox-->
+            <div>
+                <input type="checkbox" id="checkbox" name="terms">
+                <label for="terms" id="labelTerms">I agree to the terms and agreements</label>
+            </div>
+
+            <!--sign up button-->
+            <input type="button" id="signupButton" value="Sign Up">
+        </div>
+    </div>
+</body>
+
+<script>
+let button = document.querySelector("#signupButton");
+
+// Then, after entering the security questions, add the user to the database.
+button.onclick = async function() {
+    let userName = sessionStorage.getItem("storageName");
+    let password = sessionStorage.getItem("storagePin");
+    let seq_1 = document.querySelector("#seq1").value;
+    let seq_2 = document.querySelector("#seq2").value;
+    
+    let response = fetch("http://localhost:8000/users/register/" + seq_1 + '/' + seq_2, {
+        method: "POST",
+        headers: {'Authorization': 'Basic ' + btoa(userName + ':' + password)}});
+
+    await response;
+        
+    sessionStorage.removeItem("storagePassword");
+    window.location.replace("../html/login.html");
+};
+
+</script>

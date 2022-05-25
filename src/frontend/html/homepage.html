@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>T.W.I.P | Homepage</title>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--stylesheet-->
+    <link rel="stylesheet" href="../css/homepage.css">
+
+    <!--fonts-->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300&display=swap" rel="stylesheet">
+
+    <!--icon library-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <!--jQuery libary-->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha384-vk5WoKIaW/vJyUAd9n/wmopsmNhiy+L2Z+SBxGYnUkunIxVxAv/UtMOhba/xskxh" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div class="form-div">
+        <!--container 1 that contains the settings button, start tip buton and lights switch-->
+        <div class="container1">
+            <div class="item">
+                <button class="settingsButton" id="openModalSettings">
+                    <i class="fa fa-cog"></i> 
+                    Settings
+                </button>
+            </div>
+            <div class="item">
+                <input onclick="change()" type="button" value="Start Trip!" id="startTripButton"></input>
+            </div>
+            <div class="item switchLightsDiv">
+                <label for="lights" id="switchLightsLabel">Lights</label>
+                <label class="switchLights">
+                        <input type="checkbox" name="lights">
+                        <div class="slider round">
+                            <span class="on">ON</span>
+                            <span class="off">OFF</span>
+                        </div>
+                </label>
+            </div>
+        </div>
+
+        <!--container 2 that contains the welcome message-->
+        <div class="container2">
+            <div class="item">
+                <p id="welcomeMessage">Hi, <span id="someName"></span> !</p>
+            </div>
+        </div>
+
+        <br>
+        <!--container 3 that contains the values distance, speed and pace-->
+        <div class="container3">
+            <div class="item">
+                <h3 class="headerData">Distance</h3>
+                <span class="dot" id="distance">80 <br> km</span>
+            </div>
+            <div class="item">
+                <h3 class="headerData">Speed</h3>
+                <span class="dot" id="speed">30 <br> km/h</span>
+            </div>
+            <div class="item">
+                <h3 class="headerData">Pace</h3>
+                <span class="dot" id="pace">2 <br> km/h</span>
+            </div>
+        </div>
+    </div>
+
+    <!--modal settings-->
+    <div id="modalSettings" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+
+            <button class="modalButtons" id="openModalCheckHistory">Check history</button>
+            <br>
+
+            <button class="modalButtons" id="openModalDeleteHistory">Delete history</button>
+            <br>
+
+            <button class="modalButtons" id="openModalDeleteUser">Delete user</button>
+            <br>
+
+            <a href="../html/login.html">
+                <button class="modalButtons"><i class="fa fa-sign-out" id="log-out"></i> Log out</button>
+            </a>
+        </div>
+    </div>
+
+    <!--modal check history-->
+    <div id="modalCheckHistory" class="modal">
+        <div class="modal-content">
+            <h2>History of <span id="someNameModalCheckHistory"></span></h2>
+            <p id="trip-length"><b>Trip length: </b> km</p>
+            <p id="trip-distance"><b>Total distance: </b> km</p>
+            <p id="top-speed"><b>Top speed: </b> km/h</p>
+            <p id="trip-pace"><b>Pace: </b> km/h</p>
+            <a href="../html/homepage.html">
+                <input type="button" id="closeButton" value="Close">
+            </a>
+        </div>
+    </div>
+
+    <!--modal delete history-->
+    <div id="modalDeleteHistory" class="modal">
+        <div class="modal-content">
+            <p>Are you sure you want to delete the history of the following account? <br> <br>
+                <span id="someNameModalDeleteHistory"></span><br><br>If yes, fill in the according pincode.</p>
+            <input id="validatePin" type="password" name="pin" maxlength="4">
+            <br>
+            <a href="../html/homepage.html">
+                <input type="button" id="confirmButtonDeleteHistory" value="Confirm">
+            </a>
+            <a href="../html/homepage.html">
+                <input type="button" id="cancelButton" value="Cancel">
+            </a>
+        </div>
+    </div>
+
+    <!--modal delete user-->
+    <div id="modalDeleteUser" class="modal">
+        <div class="modal-content">
+            <p>Are you sure you want to delete the following account?<br><br>
+                <span id="someNameModalDeleteUser"></span><br><br> If yes, fill in the according pincode.</p>
+            <input id="validatePinUser" type="password" name="pin" maxlength="4">
+            <br>
+            <input type="button" id="confirmButtonDeleteUser" value="Confirm">
+            <a href="../html/homepage.html">
+                <input type="button" id="cancelButton" value="Cancel">
+            </a>
+        </div>
+    </div>
+</body>
+
+<script>
+    //output data for distance, speed and pace
+    setInterval(requestData, 500);
+
+    // Change distance speed and pace on the dashboard.
+    function changeData(data) {
+        if (data !== undefined) {
+            document.querySelector("#distance").textContent = data.distance + " km";
+            document.querySelector("#speed").textContent = data.speed + " m/s";
+            document.querySelector("#pace").textContent = data.pace + " m/s";
+        }
+    }
+
+    // Function which fetches the current dashboard data from the backend.
+    function requestData() {
+        fetch('http://localhost:8000/hardware/data')
+            .then(response => response.json())
+            .then(changeData);
+    }
+
+    //show username
+    window.onload = function() {
+        var name = sessionStorage.getItem("storageName");
+        document.getElementById('someName').innerHTML = name;
+    }
+
+    //modal settings
+    var modalSettings = document.getElementById("modalSettings");
+    var buttonSettings = document.getElementById("openModalSettings");
+    var span = document.getElementsByClassName("close")[0];
+    let logoutButton = document.querySelector("#log-out");
+
+    // Button to log the current user out.
+    logoutButton.onclick = function() {
+        fetch("http://localhost:8000/users/logout");
+    };
+    buttonSettings.onclick = function() {
+        modalSettings.style.display = "block";
+
+        //jQuery function to blur the background when modal is open
+        $('.modal').addClass('open');
+        if ($('.modal').hasClass('open')) {
+            $('.form-div').addClass('blur');
+        }
+    }
+
+    span.onclick = function() {
+        modalSettings.style.display = "none";
+
+        //remove blur when modal is closed
+        $('.form-div').removeClass('blur');
+    }
+
+    window.onclick = function(event) {
+        if (event.target == modalSettings) {
+            modalSettings.style.display = "none";
+
+            //remove blur when modal is closed
+            $('.form-div').removeClass('blur');
+        }
+    }
+
+    //modal check history
+    var modalCheckHistory = document.getElementById("modalCheckHistory");
+    var buttonCheckHistory = document.getElementById("openModalCheckHistory");
+
+    //Shows the history of the last trip by the current user.
+    buttonCheckHistory.onclick = function() {
+        modalCheckHistory.style.display = "block";
+        var nameModalCheckHistory = sessionStorage.getItem("storageName");
+        fetch('http://localhost:8000/trip/history')
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                document.querySelector("#trip-length").innerHTML = data.trip_length + " seconds";
+                document.querySelector("#trip-distance").innerHTML = data.distance + " m";
+                document.querySelector("#top-speed").innerHTML = data.top_speed + " m/s";
+                document.querySelector("#trip-pace").innerHTML = data.pace + " m/s";
+            });
+        document.getElementById('someNameModalCheckHistory').innerHTML = nameModalCheckHistory;
+    }
+
+    //modal delete history
+    var modalDeleteHistory = document.getElementById("modalDeleteHistory");
+    var buttonDeleteHistory = document.getElementById("openModalDeleteHistory");
+
+    buttonDeleteHistory.onclick = function() {
+        modalDeleteHistory.style.display = "block";
+        var nameModalDeleteHistory = sessionStorage.getItem("storageName");
+        document.getElementById('someNameModalDeleteHistory').innerHTML = nameModalDeleteHistory;
+    }
+
+    //modal delete user
+    var modalDeleteUser = document.getElementById("modalDeleteUser");
+    var buttonDeleteUser = document.getElementById("openModalDeleteUser");
+
+   
+    buttonDeleteUser.onclick = function() {
+        modalDeleteUser.style.display = "block";
+        var nameModalDeleteUser = sessionStorage.getItem("storageName");
+        document.getElementById('someNameModalDeleteUser').innerHTML = nameModalDeleteUser;
+    }
+
+    //to change start trip to stop trip button and vice versa
+    function change() {
+        var elem = document.getElementById("startTripButton");
+        if (elem.value == "Stop Trip!") {
+            elem.value = "Start Trip!";
+            fetch("http://localhost:8000/trip/finish", {
+                method: "POST"
+            });
+        } else {
+            elem.value = "Stop Trip!";
+            fetch("http://localhost:8000/trip/start")
+        }
+    }
+
+    // Delete the current user and trips they did.
+    var yesButton = document.getElementById('confirmButtonDeleteUser');
+    yesButton.onclick = async function() {
+        let password = document.querySelector("#validatePinUser").value;
+        let userName = sessionStorage.getItem("storageName");
+        let response = fetch('http://localhost:8000/users/delete', {
+            method: "DELETE",
+            headers: {'Authorization': 'Basic ' + btoa(userName + ':' + password)}});
+        let data = await response;
+        console.log(data);
+        alert("You successfully deleted your account!");
+        window.location.replace("../html/login.html");
+    }    
+
+    // Delete the history of the current user.
+    var confirmButtonDeleteHistory = document.getElementById('confirmButtonDeleteHistory');
+    confirmButtonDeleteHistory.onclick = function() {
+        fetch("http://localhost:8000/trip/history/delete", {
+            method: "DELETE",
+        })
+        .then(res => {
+            console.log("Request complete! response:", res);
+        })
+        alert("You successfully deleted your history!");
+    }
+</script>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>T.W.I.P | Register</title>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1">
+
+    <!--stylesheet-->
+    <link rel="stylesheet" href="../css/register.css">
+
+    <!--fonts-->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="form-div">
+        <div class="container">
+            <!--register header-->
+            <h2 id="registerHeader">Register</h2>
+
+            <br>
+
+            <!--username-->
+            <label><b>Username:</b></label>
+            <input type="text" id="someName" placeholder="Enter Username" required>
+
+            <br>
+
+            <!--pincode-->
+            <label><b>Pincode:</b></label>
+            <input type="password" id="somePass" placeholder="Enter Pincode" required>
+
+            <br>
+
+            <label><b>Confirm pincode:</b></label>
+            <input type="password" id="someConfirmPass" placeholder="Enter Pincode" required>
+
+            <br>
+
+            <!--next button-->
+            <input type="button" id="nextButton" value="Next">
+        </div>
+    </div>
+</body>
+
+<script>
+    // Register the password and username, and redirect this info to the next page.
+    var button = document.getElementById('nextButton');
+    let pincode = document.querySelector("#somePass");
+    let confirmPincode = document.querySelector("#someConfirmPass");
+    var nextButton = document.getElementById('nextButton');
+    nextButton.onclick = function() {
+        var name = document.getElementById('someName').value;
+        sessionStorage.setItem("storageName", name);
+        if (confirmPincode.value == pincode.value) {
+            sessionStorage.setItem("storagePin", pincode.value);
+            window.location.replace("../html/registerSecurity.html");
+        } else {
+            alert("your pincodes are not the same");
+        }
+    }
+</script>
