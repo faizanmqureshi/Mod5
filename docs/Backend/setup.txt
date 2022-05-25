@@ -1,0 +1,2 @@
+First download the rustup language from rust-lang.org
+Then after installing type "rustup default nightly". This is necesairy to use rocket.
